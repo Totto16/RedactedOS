@@ -95,7 +95,7 @@ jobs:
             ${{ matrix.config.os == 'windows' && 'mkdir ./extracted/ && unzip -q toolchain.zip -d ./extracted/' || 'tar -xf toolchain.tar.xz'}}
             mv "./extracted/" "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf" || true ## only needed on windows
             mv "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/" "$RUNNER_TEMP/arm-toolchain"
-            echo ${{ matrix.config.os == 'windows' && '"$RUNNER_TEMP\\arm-toolchain\\bin"' || '"$RUNNER_TEMP/arm-toolchain/bin"'}} >> $GITHUB_PATH
+            echo ${{ matrix.config.os == 'windows' && '"$(echo "$RUNNER_TEMP" | sed -E "s|\\|/|g" | sed -E "s|^([A-Za-z]):|/\L\1|")/arm-toolchain/bin"' || '"$RUNNER_TEMP/arm-toolchain/bin"'}} >> $GITHUB_PATH
 
       - name: Build
         run: |
