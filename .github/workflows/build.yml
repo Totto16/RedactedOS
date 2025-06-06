@@ -75,6 +75,7 @@ jobs:
             mingw-w64-${{matrix.config.architecture}}-make
             mingw-w64-${{matrix.config.architecture}}-cmake
             git
+            unzip
 
       - name: Install Linux Dependencies
         if: matrix.config.os == 'ubuntu'
@@ -94,17 +95,19 @@ jobs:
             wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.tar.xz" -O "toolchain.tar.xz"
             tar -xf toolchain.tar.xz
             mkdir -pv /opt/arm-toolchain
-            mv arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/ /opt/arm-toolchain/
+            mv arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf /opt/arm-toolchain/
             echo "/opt/arm-toolchain/bin" >> $GITHUB_PATH
             ls -lsa /opt/arm-toolchain/ /opt/arm-toolchain/bin
 
       - name: Install Toolchain (Windows)
         if: matrix.config.os == 'windows'
         run: |
-            Invoke-WebRequest -Uri "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -OutFile "toolchain.zip"
-            mkdir "$env:RUNNER_TEMP\arm-toolchain" -Force 
-            Expand-Archive -Path "toolchain.zip" -DestinationPath "$env:RUNNER_TEMP\arm-toolchain"
-            echo "$env:RUNNER_TEMP\arm-toolchain" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+            wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -O "toolchain.zip"
+            unzip toolchain.zip
+            mkdir -pv "$env:RUNNER_TEMP\arm-toolchain"
+            mv arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf /opt/arm-toolchain/
+            echo "/opt/arm-toolchain/bin" >> $GITHUB_PATH
+            ls -lsa /opt/arm-toolchain/ /opt/arm-toolchain/bin
 
       - name: Build
         run: make all
