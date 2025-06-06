@@ -98,7 +98,10 @@ jobs:
             echo ${{ matrix.config.os == 'windows' && '"$RUNNER_TEMP\\arm-toolchain\\bin"' || '"$RUNNER_TEMP/arm-toolchain/bin"'}} >> $GITHUB_PATH
 
       - name: Build
-        run: make all
+        run: |
+          which aarch64-none-elf-gcc || which aarch64-none-elf-gcc.exe || true
+          echo $PATH
+          make all
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
