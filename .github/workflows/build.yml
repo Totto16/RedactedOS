@@ -63,7 +63,7 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Install MSYS2 Dependencies
+      - name: Setup MSYS2 with Dependencies
         if: matrix.config.os == 'windows' && ( matrix.config.environment == 'mingw')
         uses: msys2/setup-msys2@v2
         with:
@@ -92,10 +92,10 @@ jobs:
       - name: Install Toolchain
         run: |
             wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.${{ matrix.config.os == 'windows' && 'zip' || 'tar.xz'}}" -O "toolchain.${{ matrix.config.os == 'windows' && 'zip' || 'tar.xz'}}"
-            ${{ matrix.config.os == 'windows' && 'unzip toolchain.zip' || 'tar -xf toolchain.tar.xz'}}
+            ${{ matrix.config.os == 'windows' && 'mkdir ./extracted/ && unzip -q toolchain.zip -d ./extracted/' || 'tar -xf toolchain.tar.xz'}}
+            mv "./extracted/" "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf" || true ## only needed on windows
             mv "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/" "$RUNNER_TEMP/arm-toolchain"
             echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
-            ls -lsa "$RUNNER_TEMP" "$RUNNER_TEMP/arm-toolchain/" "$RUNNER_TEMP/arm-toolchain/bin"
 
       - name: Build
         run: make all
