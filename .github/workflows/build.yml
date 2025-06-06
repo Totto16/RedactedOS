@@ -95,15 +95,7 @@ jobs:
             ${{ matrix.config.os == 'windows' && 'mkdir ./extracted/ && unzip -q toolchain.zip -d ./extracted/' || 'tar -xf toolchain.tar.xz'}}
             mv "./extracted/" "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf" || true ## only needed on windows
             mv "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/" "$RUNNER_TEMP/arm-toolchain"
-            echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
-            ls -lsa "$RUNNER_TEMP/arm-toolchain/bin"
-            RUNNER_TEMP_LINUX="$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')"
-            find "$RUNNER_TEMP_LINUX/arm-toolchain/bin" -maxdepth 1 -type f -name '*.exe' | while read EXE_FILE; do
-              BASE_FILE="$(basename "$EXE_FILE" .exe)"
-              echo "Creating symlink from $EXE_FILE to $RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE"
-              ln -sf "$EXE_FILE" "$RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE" || true # TODO
-            done
-            ls -lsa "$RUNNER_TEMP/arm-toolchain/bin"
+            echo ${{ matrix.config.os == 'windows' && '"$RUNNER_TEMP\\arm-toolchain\\bin"' || '"$RUNNER_TEMP/arm-toolchain/bin"'}} >> $GITHUB_PATH
 
       - name: Build
         run: make all
