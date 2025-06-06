@@ -92,16 +92,16 @@ jobs:
       - name: Install Toolchain (Linux + MacOS)
         if: matrix.config.os != 'windows'
         run: |
-            wget "https://developer.arm.com/-/media/Files/downloads/gnu/${{arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.tar.xz" -O "toolchain.tar.xz"
+            wget "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.tar.xz" -O "toolchain.tar.xz"
             tar -xf toolchain.tar.xz
             mkdir -pv /opt/arm-toolchain
-            mv arm-gnu-toolchain-${{arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/ /opt/arm-toolchain/
+            mv arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/ /opt/arm-toolchain/
             echo "/opt/arm-toolchain/bin" >> $GITHUB_PATH
 
       - name: Install Toolchain (Windows)
         if: matrix.config.os != 'windows'
         run: |
-            wget "https://developer.arm.com/-/media/Files/downloads/gnu/${{arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -O "toolchain.zip"
+            wget "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -O "toolchain.zip"
             echo "TODO"
 
       - name: Build
