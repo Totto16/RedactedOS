@@ -96,7 +96,10 @@ jobs:
             mv "./extracted/" "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf" || true ## only needed on windows
             mv "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/" "$RUNNER_TEMP/arm-toolchain"
             echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
-            ls -lsa "$RUNNER_TEMP" "$RUNNER_TEMP/arm-toolchain/" "$RUNNER_TEMP/arm-toolchain/bin"
+            find "$RUNNER_TEMP/arm-toolchain/bin" -maxdepth 1 -type f -name '*.exe' | while read EXE_FILE; do
+              BASE_FILE=$(basename "$EXE_FILE" .exe)
+              ln -s "$EXE_FILE" "$RUNNER_TEMP/arm-toolchain/bin/$BASE_FILE"
+            done
 
       - name: Build
         run: make all
