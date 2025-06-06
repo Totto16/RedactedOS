@@ -99,8 +99,9 @@ jobs:
             ls -lsa "$RUNNER_TEMP/arm-toolchain/bin"
             find "$RUNNER_TEMP/arm-toolchain/bin" -maxdepth 1 -type f -name '*.exe' | while read EXE_FILE; do
               BASE_FILE="$(basename "$EXE_FILE" .exe)"
-              ln -s "$EXE_FILE" "$RUNNER_TEMP/arm-toolchain/bin/$BASE_FILE"
+              ln -sf "$EXE_FILE" "$RUNNER_TEMP/arm-toolchain/bin/$BASE_FILE"
             done
+            ls -lsa "$RUNNER_TEMP/arm-toolchain/bin"
 
       - name: Build
         run: make all
