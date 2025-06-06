@@ -74,20 +74,19 @@ jobs:
             mingw-w64-${{matrix.config.architecture}}-ca-certificates
             mingw-w64-${{matrix.config.architecture}}-make
             mingw-w64-${{matrix.config.architecture}}-cmake
-            mingw-w64-${{matrix.config.architecture}}-qemu
             git
 
       - name: Install Linux Dependencies
         if: matrix.config.os == 'ubuntu'
         run: |
           sudo apt-get update
-          sudo apt-get install make qemu -y --no-install-recommends
+          sudo apt-get install make -y --no-install-recommends
 
       - name: Install MacOS Dependencies
         if: matrix.config.os == 'macos'
         run: |
           brew update
-          brew install make qemu
+          brew install make
 
       - name: Install Toolchain (Linux + MacOS)
         if: matrix.config.os != 'windows'
@@ -99,10 +98,12 @@ jobs:
             echo "/opt/arm-toolchain/bin" >> $GITHUB_PATH
 
       - name: Install Toolchain (Windows)
-        if: matrix.config.os != 'windows'
+        if: matrix.config.os == 'windows'
         run: |
-            wget "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -O "toolchain.zip"
-            echo "TODO"
+            Invoke-WebRequest -Uri "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -OutFile "toolchain.zip"
+            mkdir "$env:RUNNER_TEMP\arm-toolchain" -Force 
+            Expand-Archive -Path "toolchain.zip" -DestinationPath "$env:RUNNER_TEMP\arm-toolchain"
+            echo "$env:RUNNER_TEMP\arm-toolchain" | Out-File -FilePath "$env:GITHUB_PATH" -Append
 
       - name: Build
         run: make all
