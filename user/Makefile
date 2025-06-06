@@ -15,12 +15,15 @@ TARGET = $(NAME).bin
 ELF = $(NAME).elf
 LOCATION = ../fs/redos/user/
 
-all: $(TARGET)
+all: $(TARGET) libuser.a
 
-$(TARGET): $(OBJ)
+%.bin: $(OBJ)
 	mkdir -p "$(LOCATION)"
 	$(LD) $(LDFLAGS) -o $(LOCATION)$(ELF) $(OBJ) ../shared/libshared.a
 	$(OBJCOPY) -O binary $(LOCATION)$(ELF) $(LOCATION)$(TARGET)
+
+libuser.a: $(OBJ)
+	$(AR) rcs libuser.a $(OBJ)
 
 %.o: %.S
 	$(CC) $(CFLAGS) -c $< -o $@
