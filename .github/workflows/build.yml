@@ -73,9 +73,9 @@ jobs:
             mingw-w64-${{matrix.config.architecture}}-pkg-config
             mingw-w64-${{matrix.config.architecture}}-ca-certificates
             mingw-w64-${{matrix.config.architecture}}-make
-            mingw-w64-${{matrix.config.architecture}}-cmake
             git
             unzip
+            make
 
       - name: Install Linux Dependencies
         if: matrix.config.os == 'ubuntu'
