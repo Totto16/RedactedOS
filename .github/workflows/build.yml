@@ -97,8 +97,8 @@ jobs:
             mv "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/" "$RUNNER_TEMP/arm-toolchain"
             echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
             ls -lsa "$RUNNER_TEMP/arm-toolchain/bin"
-            find "$RUNNER_TEMP/arm-toolchain/bin" -maxdepth 1 -type f -name '*.exe' | while read EXE_FILE; do
-              RUNNER_TEMP_LINUX="$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')"
+            RUNNER_TEMP_LINUX="$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')"
+            find "$RUNNER_TEMP_LINUX/arm-toolchain/bin" -maxdepth 1 -type f -name '*.exe' | while read EXE_FILE; do
               BASE_FILE="$(basename "$EXE_FILE" .exe)"
               echo "Creating symlink from $EXE_FILE to $RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE"
               ln -sf "$EXE_FILE" "$RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE" || true # TODO
