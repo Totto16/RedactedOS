@@ -108,7 +108,8 @@ jobs:
         if: matrix.config.os == 'windows'
         shell: msys2 {0}
         run: |
-          echo 'export PATH="/d/a/_temp/arm-toolchain/bin:$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')/arm-toolchain/bin:$PATH"' > /etc/profile.d/custom_path.sh
+
+          echo "export PATH=\"/d/a/_temp/arm-toolchain/bin:$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')arm-toolchain/bin:\$PATH\"" > /etc/profile.d/custom_path.sh
           chmod +x /etc/profile.d/custom_path.sh
       - name: Check PATH in MSYS2
         if: matrix.config.os == 'windows'
