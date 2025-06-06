@@ -100,7 +100,8 @@ jobs:
             find "$RUNNER_TEMP/arm-toolchain/bin" -maxdepth 1 -type f -name '*.exe' | while read EXE_FILE; do
               RUNNER_TEMP_LINUX="$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')"
               BASE_FILE="$(basename "$EXE_FILE" .exe)"
-              ln -sf "$EXE_FILE" "$RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE"
+              echo "Creating symlink from $EXE_FILE to $RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE"
+              ln -sf "$EXE_FILE" "$RUNNER_TEMP_LINUX/arm-toolchain/bin/$BASE_FILE" || true # TODO
             done
             ls -lsa "$RUNNER_TEMP/arm-toolchain/bin"
 
