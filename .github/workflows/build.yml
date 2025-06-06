@@ -89,25 +89,14 @@ jobs:
           brew update
           brew install make
 
-      - name: Install Toolchain (Linux + MacOS)
-        if: matrix.config.os != 'windows'
+      - name: Install Toolchain
         run: |
-            wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.tar.xz" -O "toolchain.tar.xz"
-            tar -xf toolchain.tar.xz
-            mkdir -pv /opt/arm-toolchain
-            mv arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf /opt/arm-toolchain/
-            echo "/opt/arm-toolchain/bin" >> $GITHUB_PATH
-            ls -lsa /opt/arm-toolchain/ /opt/arm-toolchain/bin
-
-      - name: Install Toolchain (Windows)
-        if: matrix.config.os == 'windows'
-        run: |
-            wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.zip" -O "toolchain.zip"
-            unzip toolchain.zip
-            mkdir -pv "$env:RUNNER_TEMP\arm-toolchain"
-            mv arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf /opt/arm-toolchain/
-            echo "/opt/arm-toolchain/bin" >> $GITHUB_PATH
-            ls -lsa /opt/arm-toolchain/ /opt/arm-toolchain/bin
+            wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${{env.arm_toolchain_version}}/binrel/arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf.${{ matrix.config.os == 'windows' && 'zip' || 'tar.xz'}}" -O "toolchain.${{ matrix.config.os == 'windows' && 'zip' || 'tar.xz'}}"
+            ${{ matrix.config.os == 'windows' && 'unzip toolchain.zip' || 'tar -xf toolchain.tar.xz'}}
+            mkdir -pv "$RUNNER_TEMP/arm-toolchain"
+            mv "arm-gnu-toolchain-${{env.arm_toolchain_version}}-${{matrix.config.toolchain_arch}}-aarch64-none-elf/" "$RUNNER_TEMP/arm-toolchain"
+            echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
+            ls -lsa "$RUNNER_TEMP" "$RUNNER_TEMP/arm-toolchain/" "$RUNNER_TEMP/arm-toolchain/bin"
 
       - name: Build
         run: make all
