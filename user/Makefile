@@ -18,6 +18,7 @@ LOCATION = ../fs/redos/user/
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
+	mkdir -p "$(LOCATION)"
 	$(LD) $(LDFLAGS) -o $(LOCATION)$(ELF) $(OBJ) ../shared/libshared.a
 	$(OBJCOPY) -O binary $(LOCATION)$(ELF) $(LOCATION)$(TARGET)
 
