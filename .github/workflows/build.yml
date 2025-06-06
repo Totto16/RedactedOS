@@ -98,9 +98,19 @@ jobs:
             echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
 
       - name: Fix PATH Environment variable in MSYS2
+        if: matrix.config.os == 'windows'
         shell: pwsh
         run: |
             echo "$env:RUNNER_TEMP\\arm-toolchain\\bin" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+            Add-Content -Path $Env:GITHUB_PATH -Value "$Env:RUNNER_TEMP\arm-toolchain\bin"
+
+      - name: Check PATH in MSYS2
+        if: matrix.config.os == 'windows'
+        shell: msys2 {0}
+        run: |
+          echo "PATH=$PATH"
+          which aarch64-none-elf-gcc || echo "Tool not found"
+      
       - name: Build
         run: |
           echo $PATH
