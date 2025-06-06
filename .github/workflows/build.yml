@@ -100,7 +100,7 @@ jobs:
       - name: Fix PATH Environment variable in MSYS2
         shell: bash
         run: |
-            echo "$RUNNER_TEMP/arm-toolchain/bin" >> $GITHUB_PATH
+            echo "$(echo "$RUNNER_TEMP" | sed -E 's|\\|/|g' | sed -E 's|^([A-Za-z]):|/\L\1|')/arm-toolchain/bin" >> $GITHUB_PATH
 
       - name: Build
         run: |
