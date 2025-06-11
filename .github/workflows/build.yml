@@ -106,6 +106,7 @@ jobs:
 
       - name: Build
         run: |
+          mkdir -pv fs/redos/user
           make all
 
       - name: Upload artifacts
